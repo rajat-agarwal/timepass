@@ -27,6 +27,14 @@ public class TreeNode {
         return createMinimalBST(array, 0, array.length - 1);
     }
 
+    public void addRightChild(int data){
+        setRightChild(new TreeNode(data));
+    }
+
+    public void addLeftChild(int data){
+        setLeftChild(new TreeNode(data));
+    }
+
     private void setLeftChild(TreeNode left) {
         this.left = left;
         if (left != null) {

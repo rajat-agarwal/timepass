@@ -4,6 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+/*
+Input
+1
+58
+41
+57 95 13 29 1 99 34 77 61 23 24 70 73 88 33 61 43 5 41 63 8 67 20 72 98 59 46 58 64 94 97 70 46 81 42 7 1 52 20 54 81 3 73 78 81 11 41 45 18 94 24 82 9 19 59 48 2 72
+83 84 85 76 13 87 2 23 33 82 79 100 88 85 91 78 83 44 4 50 11 68 90 88 73 83 46 16 7 35 76 31 40 49 65 2 18 47 55 38 75 58 86 77 96 94 82 92 10 86 54 49 65 44 77 22 81 52
+
+Output
+223
+ */
 public class Knapsack_0_1 {
     private static int findMaxValue(int[] varr, int[] warr, int w){
         int maxVal = 0;
@@ -19,9 +30,7 @@ public class Knapsack_0_1 {
                         maxVal = Math.max(maxVal, e.getValue()+varr[i]);
                     }
                 }
-                Map<Integer, Integer> temp = dp1;
-                dp1 = dp2;
-                dp2 = temp;
+                dp1.putAll(dp2);
                 dp2.clear();
             }
         }
