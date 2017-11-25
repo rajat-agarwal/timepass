@@ -39,19 +39,28 @@ public class Rippling_Select_Song_Playlist {
 
     private static int maximiseSongsDPBestSpaceOptimised(int[] songs, int duration) {
         int[] dp = new int[duration + 1];
+        int[] selectedSongs = new int[songs.length];
         for (int i = 0; i < songs.length; i++) {
             for (int j = songs[i]; j <= duration; j++) {
 
                 int taken = songs[i] == j ? 1 : (dp[j - songs[i]] > 0 ? 1 + dp[j - songs[i]] : 0);
                 dp[j] = Math.max(taken, dp[j]);
+
+                //enable printing of final selected songs
+                if (taken > dp[j])
+                    selectedSongs[i]++;
             }
         }
+        for (int s : selectedSongs)
+            System.out.print(s + " ");
+
         return dp[duration];
     }
 
     private static void test1() {
-        int[] input = {5, 2, 2, 5, 3, 2, 1};
-        int duration = 10;
+//        int[] input = {5, 2, 2, 5, 3, 2, 1};
+        int[] input = {3, 4};
+        int duration = 6;
         System.out.println(maximiseSongsDP(input, duration));
         System.out.println(maximiseSongsDPSpaceOptimised(input, duration));
         System.out.println(maximiseSongsDPBestSpaceOptimised(input, duration));
@@ -59,27 +68,28 @@ public class Rippling_Select_Song_Playlist {
 
     private static void regression() {
         for (int i = 0; i < 100; i++) {
-            int numSongs = AssortedMethods.randomInt(100);
+            int numSongs = AssortedMethods.randomInt(20);
             int songMinDuration = AssortedMethods.randomInt(3) + 1;
             int songMaxDuration = AssortedMethods.randomInt(7);
             int[] input = AssortedMethods.randomArray(numSongs, songMinDuration, songMaxDuration);
             int duration = AssortedMethods.randomInt(numSongs * (songMaxDuration + songMinDuration) / 2);
             for (int in : input)
                 System.out.print(in + " ");
-            System.out.print(duration);
+            System.out.println("duration: " + duration);
 
-            int t1 = maximiseSongsDP(input, duration);
-            int t2 = maximiseSongsDPSpaceOptimised(input, duration);
+//            int t1 = maximiseSongsDP(input, duration);
+//            int t2 = maximiseSongsDPSpaceOptimised(input, duration);
             int t3 = maximiseSongsDPBestSpaceOptimised(input, duration);
 
-            if (t1 != t2 || t1 != t3) {
-                System.out.println("t1=" + t1 + " t2=" + t2 + " t3=" + t3);
-            }
+//            if (t1 != t2 || t1 != t3) {
+//                System.out.println("------panic--------" + "t1=" + t1 + " t2=" + t2 + " t3=" + t3);
+//            }
+            System.out.println("number of songs picked=" + t3);
         }
     }
 
     public static void main(String[] args) {
         test1();
-        regression();
+//        regression();
     }
 }
