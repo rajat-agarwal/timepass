@@ -1,4 +1,5 @@
 package mi;
+
 import mi.utilities.TreeNode;
 
 import java.util.Stack;
@@ -104,26 +105,21 @@ public class BST_Traversal {
     }
 
     private void postorderIterative(TreeNode node) {
-        Stack<TreeNode> stack = new Stack<>();
+        Stack<TreeNode> s1 = new Stack<>();
+        Stack<TreeNode> s2 = new Stack<>();
 
-        while (true) {
-            while (node != null) {
-                stack.push(node);
-                node = node.left;
-            }
-
-            if (stack.isEmpty()) {
-                break;
-            }
-
-            node = stack.peek();
-
-            if (node.right == null && node.left == null) {
-                System.out.print(node.data + "\t");
-            }
-
-            node = node.right;
+        if (node != null)
+            s1.push(node);
+        while (!s1.isEmpty()) {
+            TreeNode n = s1.pop();
+            s2.push(n);
+            if (n.left != null)
+                s1.push(n.left);
+            if (n.right != null)
+                s1.push(n.right);
         }
+        while (!s2.isEmpty())
+            System.out.print(s2.pop().data + "\t");
     }
 
     private void postorderRecursive(TreeNode node) {
@@ -162,7 +158,7 @@ public class BST_Traversal {
         postorderRecursive(root);
 
         System.out.println("\n\nIterative postorder traversal");
-//        postorderIterative(root);
+        postorderIterative(root);
 
         System.out.println();
         System.out.println();

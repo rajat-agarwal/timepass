@@ -13,6 +13,12 @@ public class Algorythma_Range_Query {
             return 0;
         }
 
+//        int lIdx = Collections.binarySearch(indexRange, l);
+//        int rIdx = Collections.binarySearch(indexRange, r);
+//        lIdx = lIdx < 0 ? Math.abs(lIdx-1) : lIdx;
+//        rIdx = rIdx < 0 ? Math.abs(rIdx-1) : rIdx;
+//        return rIdx - lIdx + 1;
+
         int i = 0;
         int count = 0;
         while (i < indexRange.size() && indexRange.get(i) < l)
