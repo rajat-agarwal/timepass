@@ -6,13 +6,13 @@ import java.util.List;
 public class Paranthesis_Permutations {
     private static List<String> print(int open, int close, StringBuilder sb) {
         List<String> ret = new ArrayList<>();
-        if (open > 0) {
-            sb.append('(');
-            ret.addAll(print(open - 1, close, sb));
-        }
         if (close > open) {
             sb.append(')');
             ret.addAll(print(open, close - 1, sb));
+        }
+        if (open > 0) {
+            sb.append('(');
+            ret.addAll(print(open - 1, close, sb));
         }
         if (close == 0) {
             ret.add(sb.toString());
