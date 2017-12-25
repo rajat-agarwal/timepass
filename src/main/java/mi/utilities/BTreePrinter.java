@@ -1,8 +1,6 @@
 package mi.utilities;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class BTreePrinter {
 
@@ -10,6 +8,23 @@ public class BTreePrinter {
         int maxLevel = BTreePrinter.maxLevel(root);
 
         printNodeInternal(Collections.singletonList(root), 1, maxLevel);
+    }
+
+    public static void printLevelOrder(TreeNode node) {
+        System.out.print("levelOrder=[");
+        if (node != null) {
+            Queue<TreeNode> queue = new LinkedList<>();
+            queue.add(node);
+            while (!queue.isEmpty()) {
+                TreeNode n = queue.remove();
+                System.out.print(n.data + ", ");
+                if (n.left != null)
+                    queue.add(n.left);
+                if (n.right != null)
+                    queue.add(n.right);
+            }
+        }
+        System.out.println("]");
     }
 
     public static List<TreeNode> inorder(TreeNode node) {
