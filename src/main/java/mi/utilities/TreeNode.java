@@ -1,6 +1,9 @@
 package mi.utilities;
 
-public class TreeNode {
+import java.util.ArrayList;
+import java.util.List;
+
+public class TreeNode implements Comparable<TreeNode>{
     public int data;
     public TreeNode left;
     public TreeNode right;
@@ -10,6 +13,16 @@ public class TreeNode {
     public TreeNode(int d) {
         data = d;
         size = 1;
+    }
+
+    @Override
+    public int compareTo(TreeNode o){
+        return this.data - o.data;
+    }
+
+    @Override
+    public String toString(){
+        return String.valueOf(data);
     }
 
     private static TreeNode createMinimalBST(int arr[], int start, int end) {
@@ -27,11 +40,11 @@ public class TreeNode {
         return createMinimalBST(array, 0, array.length - 1);
     }
 
-    public void addRightChild(int data){
+    public void addRightChild(int data) {
         setRightChild(new TreeNode(data));
     }
 
-    public void addLeftChild(int data){
+    public void addLeftChild(int data) {
         setLeftChild(new TreeNode(data));
     }
 

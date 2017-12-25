@@ -97,6 +97,11 @@ public class Segment_Tree_Range_Maximum_Query_RMQ {
 //        int arr[] = {1, 3, 2};
         int n = arr.length;
 
+        int out = 0xF00000F0;
+        System.out.println(Integer.toBinaryString(out));
+        System.out.println(Integer.toBinaryString(out>>8));
+        System.out.println(Integer.toBinaryString(out>>>8));
+
 //        checkHeightVsNaturalSizeTest();
         // Build segment tree from given array
         constructST(arr, n);

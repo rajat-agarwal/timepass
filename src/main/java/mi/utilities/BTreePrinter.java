@@ -12,6 +12,16 @@ public class BTreePrinter {
         printNodeInternal(Collections.singletonList(root), 1, maxLevel);
     }
 
+    public static List<TreeNode> inorder(TreeNode node) {
+        if (node == null)
+            return new ArrayList<>(0);
+        List<TreeNode> ret = new ArrayList<>();
+        ret.addAll(inorder(node.left));
+        ret.add(node);
+        ret.addAll(inorder(node.right));
+        return ret;
+    }
+
     private static <T extends Comparable<?>> void printNodeInternal(List<TreeNode> nodes, int level, int maxLevel) {
         if (nodes.isEmpty() || BTreePrinter.isAllElementsNull(nodes))
             return;
