@@ -31,8 +31,10 @@ public class BST_Traversal {
 
         if (data < node.data) {
             node.left = add(data, node.left);
+            node.left.parent = node;
         } else {
             node.right = add(data, node.right);
+            node.right.parent = node;
         }
 
         return node;
