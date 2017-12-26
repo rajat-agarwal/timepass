@@ -23,10 +23,7 @@ public class K_Distant_Nodes_To_A_Given_Node_In_BT_Without_Parent_Pointer {
             int key = random.nextInt(100);
             System.out.print(" key:" + key + " (" + input.contains(key) + ")");
             TreeNode matchr = findNearestNode(bt.getRoot(), key);
-            TreeNode matchp = closetBinaryTree(bt.getRoot(), key);
-            if (matchr.data != matchp.data)
-                System.out.println(matchr.data + " " + matchp.data);
-            else System.out.println();
+            System.out.println(matchr.data);
         }
     }
 
@@ -35,39 +32,17 @@ public class K_Distant_Nodes_To_A_Given_Node_In_BT_Without_Parent_Pointer {
         Random random = new Random();
         System.out.println("Running test cases now ......");
         for (int i = 1; i <= 20; i++) {
-            try {
-                int key = random.nextInt(100);
-//                int key = 1;
-                System.out.print("key=" + key + " (" + input.contains(key) + ")");
-                TreeNode target = findNearestNode(bt.getRoot(), key);
-                System.out.print(" Best match Node=" + target.data + " ");
-                int k = random.nextInt(5);
-//                int k = 3;
-                System.out.println(" k=" + k);
-                List<TreeNode> retR = new ArrayList<>();
-                findKDistantNodes(bt.getRoot(), target, k, retR);
-                Collections.sort(retR);
-                System.out.println("rajat=" + retR);
-                List<Integer> retP = kdistanceFromTarget(bt.getRoot(), target, k);
-                Collections.sort(retP);
-                System.out.println("priyanka=" + retP);
-//                if (retP.size() != retR.size()) {
-//                    System.out.println("!!!!!!!-----PANIC---------!!!!!");
-//                    System.out.println("rajat: " + retR);
-//                    System.out.println("priyanka: " + retP);
-//                } else {
-//                    int idx = 0;
-//                    for (; idx < retR.size() && retR.get(idx).data == retP.get(idx); idx++) ;
-//                    if (idx != retR.size()) {
-//                        System.out.println("!!!!!!!-----PANIC---------!!!!!");
-//                        System.out.println("rajat: " + retR);
-//                        System.out.println("priyanka: " + retP);
-//                    }
-//                }
-                System.out.println("---------------");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            int key = random.nextInt(100);
+            System.out.print("key=" + key + " (" + input.contains(key) + ")");
+            TreeNode target = findNearestNode(bt.getRoot(), key);
+            System.out.print(" Best match Node=" + target.data + " ");
+            int k = random.nextInt(5);
+            System.out.println(" k=" + k);
+            List<TreeNode> retR = new ArrayList<>();
+            findKDistantNodes(bt.getRoot(), target, k, retR);
+            Collections.sort(retR);
+            System.out.println("rajat=" + retR);
+            System.out.println("---------------");
         }
     }
 
@@ -144,71 +119,5 @@ public class K_Distant_Nodes_To_A_Given_Node_In_BT_Without_Parent_Pointer {
             return level + 1;
         }
         return level;
-    }
-
-    static TreeNode closetBinaryTree(TreeNode node, int data) {
-        if (node == null) return null;
-        TreeNode ret = node;
-        TreeNode left = closetBinaryTree(node.left, data);
-        if (left != null && Math.abs(left.data - data) < Math.abs(node.data - data)) {
-            ret = left;
-        }
-        TreeNode right = closetBinaryTree(node.right, data);
-        if (right != null && Math.abs(right.data - data) < Math.abs(ret.data - data)) {
-            ret = right;
-        }
-        return ret;
-    }
-
-    public static List<Integer> kdistanceFromTarget(TreeNode root, TreeNode target, int k) {
-        List<Integer> result = findKDistanceTop(root, target, k).kDisNode;
-        result.addAll(findKDistanceDown(target, k));
-        return result;
-    }
-
-    static class Check {
-        List<Integer> kDisNode;
-        int distance;
-
-        Check(List<Integer> kDisNode, int distance) {
-            this.kDisNode = kDisNode;
-            this.distance = distance;
-        }
-    }
-
-    static Check findKDistanceTop(TreeNode node, TreeNode target, int k) {
-        if (node == null) return null;
-        if (node == target) {
-            return new Check(new ArrayList<>(0), 0);
-        }
-
-        Check ret = findKDistanceTop(node.left, target, k);
-        if (ret != null) {
-            ret.distance++;
-            if (ret.distance == k)
-                ret.kDisNode.add(node.data);
-            else ret.kDisNode.addAll(findKDistanceDown(node.right, k - ret.distance - 1));
-        } else {
-            ret = findKDistanceTop(node.right, target, k);
-            if (ret != null) {
-                ret.distance++;
-                if (ret.distance == k)
-                    ret.kDisNode.add(node.data);
-                else ret.kDisNode.addAll(findKDistanceDown(node.left, k - ret.distance - 1));
-            }
-        }
-        return ret;
-    }
-
-    static List<Integer> findKDistanceDown(TreeNode node, int k) {
-        if (node == null || k < 0) return new ArrayList<>(0);
-        if (k == 0) {
-            return new ArrayList<Integer>(Arrays.asList(node.data));
-        }
-
-        List<Integer> res = findKDistanceDown(node.left, k - 1);
-        res.addAll(findKDistanceDown(node.right, k - 1));
-        return res;
-
     }
 }
