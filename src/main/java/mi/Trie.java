@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Created by rajat.agarwal on 20/07/17.
  */
@@ -13,6 +14,7 @@ public class Trie {
     public class Trie_Node {
         Trie_Node[] children;
         boolean isLeaf;
+        boolean isVisited; //used for cases where unique paths are required while the trie can be traversed multiple times.
 
         public Trie_Node() {
             children = new Trie_Node[26];
