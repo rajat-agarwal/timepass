@@ -27,8 +27,11 @@ public class Max_No_A_With_4_Keys {
     }
 
     public static void main(String[] args) {
-        for (int i = 1; i < 20; i++)
-            System.out.println(computeMaxALen(i));
+        int t = 1;
+        char c = (char)(t + '0');
+        System.out.println(c);
+//        for (int i = 1; i < 20; i++)
+//            System.out.println(computeMaxALen(i));
     }
 }
 

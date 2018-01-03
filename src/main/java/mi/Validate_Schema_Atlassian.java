@@ -3,11 +3,15 @@ package mi;
 import java.util.*;
 
 public class Validate_Schema_Atlassian {
-    private static boolean isValid(String field) {
+    private static boolean isValidChar(char c) {
+        return c >= ' ' && c <= '~';
+    }
+
+    private static boolean isValidCharset(String field) {
         for (int i = 0; i < field.length(); i++) {
 
             //Check if the character is a valid character
-            if (field.charAt(i) < ' ' || field.charAt(i) > '~')
+            if (!isValidChar(field.charAt(i)))
                 return false;
 
             //Check if the sequence is a valid escape sequence
@@ -22,26 +26,26 @@ public class Validate_Schema_Atlassian {
         return true;
     }
 
-    private static boolean validStartAndEnd(String[] tokens) {
-        if (tokens[0].length() != 0 || tokens[tokens.length - 1].length() != 0) {
-            return false;
-        }
-        return true;
+    private static boolean isValidStartAndEnd(String s) {
+        // check for proper start and end of the header
+        return s != null && s.charAt(0) == '|' && s.charAt(s.length() - 1) == '|';
     }
 
-    private static boolean validHeader(String[] tokens) {
-        if (!validStartAndEnd(tokens))
-            return false;
+    private static String[] parseFieldNames(String header) {
+        // check for proper start and end of the header
+        if (!isValidStartAndEnd(header))
+            return null;
 
-        Set<String> set = new HashSet<>(tokens.length);
+        String[] ftokens = header.split("\\|", -1);
+        Set<String> set = new LinkedHashSet<>(ftokens.length);
         //Check for unique header names
-        for (int i = 1; i < tokens.length - 1; i++) {
-            if (tokens[i].length() == 0 || !isValid(tokens[i]) || set.contains(tokens[i])) {
-                return false;
+        for (int i = 1; i < ftokens.length - 1; i++) {
+            if (ftokens[i].length() == 0 || !isValidCharset(ftokens[i]) || set.contains(ftokens[i])) {
+                return null;
             }
-            set.add(tokens[i]);
+            set.add(ftokens[i]);
         }
-        return true;
+        return set.toArray(new String[0]);
     }
 
     private static String makeReturnMessage(int a, int b, int c, String s) {
@@ -52,50 +56,49 @@ public class Validate_Schema_Atlassian {
     private static String validate(String s) {
         String errorMessage = "0:0:0:format_error";
 
-        String[] input = s.split("~n", -1);
-        if (input.length < 1)
+        String[] records = s.split("~n", -1);
+        if (records.length < 1)
             return errorMessage;
 
         //parse header
-        String[] htokens = input[0].split("\\|", -1);
-        if (!validHeader(htokens)) {
+        String[] fieldNames = parseFieldNames(records[0]);
+        if (fieldNames == null) {
             return errorMessage;
         }
 
         //variables to track metrics
-        int numRecords = input.length - 2; //ignoring the header and last newline character
-        int numFields = htokens.length - 2; //ignoring the start and end empty string
+        int numOfFieldNames = fieldNames.length;
         int numEmptyValues = 0;
-        String lastFieldName = htokens[htokens.length - 2];
-        String lastDynamicFieldname = lastFieldName;
+        String lastFieldName = fieldNames[fieldNames.length - 1];
+        String lastDynamicFieldname = lastFieldName; //Last field name formed for more fields in record than the header fields
 
         //parse input records now
-        int recordNo = 1;
-        for (int i = 1; i < input.length - 1; i++) {
-            String[] rfields = input[i].split("\\|", -1);
-            if (!validStartAndEnd(rfields))
+        int recordNo = 0;
+        while (++recordNo < records.length - 1) {
+            if (!isValidStartAndEnd(records[recordNo]))
                 return errorMessage;
 
-            for (int l = 1; l < rfields.length - 1; l++) {
-                if (rfields[l].length() == 0) {
+            String[] rfields = records[recordNo].split("\\|", -1);
+            int numOfRecordFields = rfields.length - 2; // ignore the null token before first '|' and after last '|'
+            for (int i = 1; i <= numOfRecordFields; i++) {
+                if (rfields[i].length() == 0) {
                     numEmptyValues++;
                     continue;
                 }
-                if (!isValid(rfields[l]))
+                if (!isValidCharset(rfields[i]))
                     return errorMessage;
             }
 
-            numEmptyValues += numFields > (rfields.length - 2) ? numFields - (rfields.length - 2) : 0;
+            numEmptyValues += numOfFieldNames > numOfRecordFields ? numOfFieldNames - numOfRecordFields : 0;
 
-            if (rfields.length - 2 > numFields) {
+            if (numOfRecordFields > numOfFieldNames) {
                 lastDynamicFieldname = lastFieldName + "_" + recordNo;
             }
 
-            numFields = Math.max(numFields, rfields.length - 2);
-            recordNo++;
+            numOfFieldNames = Math.max(numOfFieldNames, numOfRecordFields);
         }
 
-        return makeReturnMessage(numRecords, numFields, numEmptyValues, lastDynamicFieldname);
+        return makeReturnMessage(recordNo - 1, numOfFieldNames, numEmptyValues, lastDynamicFieldname);
     }
 
     public static void main(String[] args) {
