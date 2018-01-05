@@ -104,5 +104,23 @@ public class Validate_Schema_Atlassian {
     public static void main(String[] args) {
         String input = "|name|address|~n|Patrick|patrick@test.com|pat@test.com|~n|Annie|annie@test.com|~n|Zoe|~n";
         System.out.println(validate(input));
+
+        Random random = new Random();
+        for (int k=0;k<100000;k++) {
+            int size = random.nextInt(1000000);
+            Set<Integer> set = new LinkedHashSet<>(size);
+            for (int i = 0; i < size; i++)
+                set.add(i);
+            Integer[] ret = set.toArray(new Integer[0]);
+            for (int i = 0; i < size; i++) {
+                if (ret[i] != i) {
+                    System.out.println("Panic ");
+                    for (int e : ret) {
+                        System.out.print(e + " ");
+                    }
+                    return;
+                }
+            }
+        }
     }
 }
