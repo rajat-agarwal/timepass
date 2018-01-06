@@ -25,28 +25,28 @@ public class Print_All_Paths_Source_To_Destination_2DArray {
     private static StringBuilder sb;
     private static Map<Integer, List<String>> memorisationMap;
     private static final int MULTIPLIER = 100;
+    private static final int rows = 3;
+    private static final int cols = 3;
+    private static final boolean[][] visited = new boolean[rows][cols]; //need only in case of more than 2 directions to prevent endless loop
 
     private static void setInputOutput() {
         directions = new HashMap<>(2);
         directions.put('R', new int[]{0, 1});
         directions.put('D', new int[]{1, 0});
+        directions.put('L', new int[]{0, -1});
+        directions.put('U', new int[]{-1, 0});
 
-        validPaths = new ArrayList<>();
-
-        int r = 13, c = 13, startVal = 1;
-        input = new int[r][c];
-        for (int i = 0; i < r; i++) {
-            for (int j = 0; j < c; j++) {
+        int startVal = 1;
+        input = new int[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 input[i][j] = startVal++;
             }
         }
-
-        sb = new StringBuilder(r + c);
-        memorisationMap = new HashMap<>(r * c * 2);
     }
 
     private static boolean canMove(int r, int c) {
-        return r >= 0 && r < input.length && c >= 0 && c < input[0].length;
+        return r >= 0 && r < rows && c >= 0 && c < cols;
     }
 
     private static void addYourselfToDownstreamPath(List<String> retVal, List<String> from, char dir) {
@@ -55,6 +55,7 @@ public class Print_All_Paths_Source_To_Destination_2DArray {
         }
     }
 
+    //Not that good in runtime. Use getPathsRecursive() instead.
     private static List<String> getPathsRecursiveWithMemorisation(int r, int c) {
         if (memorisationMap.containsKey(r * MULTIPLIER + c)) {
             return memorisationMap.get(r * MULTIPLIER + c);
@@ -63,7 +64,7 @@ public class Print_All_Paths_Source_To_Destination_2DArray {
         for (Map.Entry<Character, int[]> e : directions.entrySet()) {
             int newr = r + e.getValue()[0];
             int newc = c + e.getValue()[1];
-            if (newr == input.length - 1 && newc == input[0].length - 1) {
+            if (newr == rows - 1 && newc == cols - 1) {
                 retVal.add(e.getKey().toString());
             } else if (canMove(newr, newc) && input[newr][newc] != 0) {
                 addYourselfToDownstreamPath(retVal, getPathsRecursiveWithMemorisation(newr, newc), e.getKey());
@@ -74,37 +75,49 @@ public class Print_All_Paths_Source_To_Destination_2DArray {
     }
 
     private static void getPathsRecursive(int r, int c) {
-        if (r == input.length - 1 && c == input[0].length - 1) {
+        if (r == rows - 1 && c == cols - 1) {
             validPaths.add(sb.toString());
             return;
         }
-
+        visited[r][c] = true;
         for (Map.Entry<Character, int[]> e : directions.entrySet()) {
             int newr = r + e.getValue()[0];
             int newc = c + e.getValue()[1];
-            if (canMove(newr, newc) && input[newr][newc] != 0) {
+
+            if (canMove(newr, newc) && !visited[newr][newc] && input[newr][newc] != 0) {
                 sb.append(e.getKey());
                 getPathsRecursive(newr, newc);
                 sb.setLength(sb.length() - 1);
             }
         }
+        visited[r][c] = false;
+    }
+
+    private static void testMemorisationRuntime() {
+        memorisationMap = new HashMap<>(rows * cols * 2);
+        System.gc();
+        System.gc();
+        long t1 = System.currentTimeMillis();
+        getPathsRecursiveWithMemorisation(0, 0);
+        System.out.println(System.currentTimeMillis() - t1);
+//        System.out.println(memorisationMap.get(0));
+    }
+
+    private static void testRecursive() {
+        validPaths = new ArrayList<>();
+        sb = new StringBuilder(rows + cols);
+
+//        System.gc();
+//        System.gc();
+//        long t1 = System.currentTimeMillis();
+        getPathsRecursive(0, 0);
+//        System.out.println(System.currentTimeMillis() - t1);
+        System.out.println(validPaths);
     }
 
     public static void main(String[] args) {
         setInputOutput();
-        System.gc();
-        System.gc();
-        long t1 = System.currentTimeMillis();
-        getPathsRecursive(0, 0);
-        System.out.println(System.currentTimeMillis() - t1);
-//        System.out.println(validPaths);
-
-
-        System.gc();
-        System.gc();
-        t1 = System.currentTimeMillis();
-        getPathsRecursiveWithMemorisation(0, 0);
-        System.out.println(System.currentTimeMillis() - t1);
-//        System.out.println(memorisationMap.get(0));
+//        testMemorisationRuntime();
+        testRecursive();
     }
 }
