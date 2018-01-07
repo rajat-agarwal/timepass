@@ -3,58 +3,49 @@ package mi;
 import java.util.*;
 
 public class Sort_Hotel_Reviews_Booking_com {
-    private static class Node implements Comparable<Node> {
-        int id;
-        int count;
+    private static Set<String> getKeywordDictionary(String keywords) {
+        Set<String> dictionary = new HashSet<>();
+        String[] tok = keywords.split(" ", -1);
+        for (String s : tok)
+            dictionary.add(s.trim().toLowerCase());
+        return dictionary;
+    }
 
-        Node(int id, int count) {
-            this.id = id;
-            this.count = count;
+    private static Map<Integer, Integer> getHotelsByPopularityCount(Set<String> dictionary, int[] hotel_ids, String[] reviews) {
+        Map<Integer, Integer> counts = new HashMap<>();
+        for (int i = 0; i < reviews.length; i++) {
+            int hotelId = hotel_ids[i];
+            int popularity = counts.containsKey(hotelId) ? counts.get(hotelId) : 0;
+            String[] reviewWords = reviews[i].split(" |\\.|,", -1);
+            for (String w : reviewWords) {
+                if (dictionary.contains(w.trim().toLowerCase()))
+                    popularity++;
+            }
+            if (popularity > 0)
+                counts.put(hotelId, popularity);
         }
-
-        @Override
-        public int compareTo(Node o) {
-            int v = o.count - this.count;
-            return v == 0 ? this.id - o.id : v;
-        }
+        return counts;
     }
 
     static int[] sort_hotels(String keywords, int[] hotel_ids, String[] reviews) {
-        Set<String> keywordsSet = new HashSet<>();
-        String[] keyTok = keywords.split(" ", -1);
-        for (String s : keyTok)
-            keywordsSet.add(s.trim().toLowerCase());
-
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i < reviews.length; i++) {
-            String review = reviews[i];
-            int s = 0, e = 0;
-            int rating = 0;
-            while (e < review.length()) {
-                if (review.charAt(e) == ' ' || review.charAt(e) == '.' || review.charAt(e) == ',') {
-                    String word = review.substring(s, e);
-                    s = e = review.charAt(e) == ' ' ? e + 1 : e + 2;
-                    word = word.charAt(0) > 'z' ? word.toLowerCase() : word;
-                    if (keywordsSet.contains(word))
-                        rating++;
-                }
-                e++;
+        Set<String> keywordDictionary = getKeywordDictionary(keywords);
+        Map<Integer, Integer> popularityCounts = getHotelsByPopularityCount(keywordDictionary, hotel_ids, reviews);
+        Map<Integer, Set<Integer>> treemap = new TreeMap<>();
+        int counts = 0;
+        for (Map.Entry<Integer, Integer> e : popularityCounts.entrySet()){
+            if (!treemap.containsKey(e.getValue())){
+                treemap.put(e.getValue(), new TreeSet<>());
             }
-            if (map.containsKey(hotel_ids[i]))
-                map.put(hotel_ids[i], map.get(hotel_ids[i]) + rating);
-            else
-                map.put(hotel_ids[i], rating);
+            treemap.get(e.getValue()).add(e.getKey());
+            counts++;
         }
 
-        Queue<Node> pqueue = new PriorityQueue<>(map.size());
-        for (Map.Entry<Integer, Integer> e : map.entrySet()) {
-            pqueue.add(new Node(e.getKey(), e.getValue()));
-        }
+        int[] ret = new int[counts];
         int i = 0;
-        int[] ret = new int[pqueue.size()];
-        while (!pqueue.isEmpty())
-            ret[i++] = pqueue.poll().id;
-
+        for (Set<Integer> e : treemap.values()) {
+            for (int v : e)
+                ret[i++] = v;
+        }
         return ret;
     }
 
