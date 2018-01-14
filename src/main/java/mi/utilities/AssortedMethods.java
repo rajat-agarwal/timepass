@@ -46,35 +46,35 @@ public class AssortedMethods {
         return array;
     }
 
-    public static LinkedListNode randomLinkedList(int N, int min, int max) {
-        LinkedListNode root = new LinkedListNode(randomIntInRange(min, max),
+    public static ListNode randomLinkedList(int N, int min, int max) {
+        ListNode root = new ListNode(randomIntInRange(min, max),
                 null, null);
-        LinkedListNode prev = root;
+        ListNode prev = root;
         for (int i = 1; i < N; i++) {
             int data = randomIntInRange(min, max);
-            LinkedListNode next = new LinkedListNode(data, null, null);
+            ListNode next = new ListNode(data, null, null);
             prev.setNext(next);
             prev = next;
         }
         return root;
     }
 
-    public static LinkedListNode linkedListWithValue(int N, int value) {
-        LinkedListNode root = new LinkedListNode(value, null, null);
-        LinkedListNode prev = root;
+    public static ListNode linkedListWithValue(int N, int value) {
+        ListNode root = new ListNode(value, null, null);
+        ListNode prev = root;
         for (int i = 1; i < N; i++) {
-            LinkedListNode next = new LinkedListNode(value, null, null);
+            ListNode next = new ListNode(value, null, null);
             prev.setNext(next);
             prev = next;
         }
         return root;
     }
 
-    public static LinkedListNode createLinkedListFromArray(int[] vals) {
-        LinkedListNode head = new LinkedListNode(vals[0], null, null);
-        LinkedListNode current = head;
+    public static ListNode createLinkedListFromArray(int[] vals) {
+        ListNode head = new ListNode(vals[0], null, null);
+        ListNode current = head;
         for (int i = 1; i < vals.length; i++) {
-            current = new LinkedListNode(vals[i], null, current);
+            current = new ListNode(vals[i], null, current);
         }
         return head;
     }
