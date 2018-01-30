@@ -25,6 +25,9 @@ public class Binary_Tree {
         return root;
     }
 
+    public void printBottomView(){
+    }
+
     public void print(){
         BTreePrinter.printNode(root);
     }
