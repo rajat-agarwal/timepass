@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 // The below solutions work for all the input types including cases when none of the input element is +ive (all the elements of the array are -ive).
+
 public class MaxSubsetArraySum {
     public static void main(String[] args) throws FileNotFoundException {
         ArrayList<int[]> manyInputs = mi.utilities.IntArrayInputCreator.createIntArrays();
@@ -67,7 +68,7 @@ public class MaxSubsetArraySum {
             currSum += A[i];
             if (currSum > maxSumSoFar) {
                 maxSumSoFar = currSum;
-                ret[1] = i;
+                ret[1] = i; //update right boundary of the promising subarray
                 if (newSubArray) {
                     ret[0] = i;
                     newSubArray = false;
