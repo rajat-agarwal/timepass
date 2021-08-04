@@ -62,22 +62,18 @@ public class MaxSubsetArraySum {
 
     private static int[] maxSubArrayOptimised(final int[] A) {
         int[] ret = new int[]{-1, -1, Integer.MIN_VALUE};
-        boolean newSubArray = true;
-        int maxSumSoFar = Integer.MIN_VALUE, currSum = 0;
+        int maxSumSoFar = Integer.MIN_VALUE, currSum = 0, startIdx = 0;
         for (int i = 0; i < A.length; i++) {
             currSum += A[i];
             if (currSum > maxSumSoFar) {
                 maxSumSoFar = currSum;
                 ret[1] = i; //update right boundary of the promising subarray
-                if (newSubArray) {
-                    ret[0] = i;
-                    newSubArray = false;
-                }
+                ret[0] = startIdx;
             }
 
             if (currSum < 0) {
                 currSum = 0;
-                newSubArray = true;
+                startIdx = i+1;
             }
         }
         ret[2] = maxSumSoFar;
